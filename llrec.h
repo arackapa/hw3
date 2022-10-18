@@ -1,6 +1,9 @@
 #ifndef LLREC_H
 #define LLREC_H
 #include <cstdlib>
+#include <iostream> 
+
+using namespace std; 
 
 /**
  * Node struct for both problems
@@ -12,7 +15,6 @@ struct Node
 
     Node(int v, Node* n) : val(v), next(n) {}
 };
-
 
 /**
  * Given a linked list pointed to by head, creates two lists
@@ -75,14 +77,51 @@ Node* llfilter(Node* head, Comp pred);
 // implement the above function now.
 //*****************************************************************************
 
+struct isNeg {
+  bool operator()(int v){ return v < 0; }
+};
+struct isEven {
+  bool operator()(int v){ return v % 2 == 0; }
+};
+struct isOdd {
+  bool operator()(int v){ return v % 2 != 0; }
+}; 
+struct greaterThan10 {
+  bool operator()(int v){ return v > 10;}
+};
+struct lessThan10 {
+  bool operator()(int v){ return v < 10;}
+};
+
 template <typename Comp>
 Node* llfilter(Node* head, Comp pred)
 {
     //*********************************************
     // Provide your implementation below
     //*********************************************
-
-
+    // stop if we get to the end of the list 
+    if (head == NULL)
+    {
+      return NULL; 
+    }
+    else if (pred(head->val))
+    {
+      // skip the node, return the next node that meets the condition
+      Node* temp = head; 
+      head = head->next; 
+      delete temp; 
+      head = llfilter(head, pred);
+    }
+    else
+    {
+      // then we are curious about what the next node 
+      head->next = llfilter(head->next, pred);
+    }
+    
+    return head; 
+    // we want to get the next node that meets the criteria
+    // delete all the nodes that do not 
+    // since we are returning at every point in the body, the final return will only give us the whole list
 }
 
 #endif
